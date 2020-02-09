@@ -74,6 +74,8 @@ def exec_command(cmd, robot):
             robot.stop()
     elif cmd_arr[0] == 'stop':
         robot.stop()
+    elif cmd_arr[0]=='dance':
+        robot.turn_left(0.95)
 
 def get_robot(leftdir, rightdir, leftpwm, rightpwm):
     pi = pigpio.pi()
