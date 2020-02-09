@@ -1,5 +1,6 @@
 import pigpio
 import time
+from word2number import w2n
 
 LEFT_PWM = 13
 LEFT_DIR = 22
@@ -60,7 +61,7 @@ def exec_command(cmd, robot):
             robot.reverse(1)
 
         if len(cmd_arr) > 2:
-            time.sleep(float(cmd_arr[2]))
+            time.sleep(w2n.word_to_num(" ".join(cmd_arr[2:])))
             robot.stop()
 
     elif cmd_arr[0] == 'turn':
