@@ -61,7 +61,18 @@ def exec_command(cmd, robot):
             robot.reverse(1)
 
         if len(cmd_arr) > 2:
-            time.sleep(w2n.word_to_num(" ".join(cmd_arr[2:])))
+            tm = 0
+            try:
+                if 'second' in cmd_arr[-1]:
+                    tm  = w2n.word_to_num(" ".join(cmd_arr[2:-1]))
+                else:
+                    tm = w2n.word_to_num(' '.join(cmd_arr[2:]))
+            except ValueError:
+                if 'second' in cmd_arr[-1]:
+                    tm  = w2n.word_to_num(" ".join(cmd_arr[3:-1]))
+                else:
+                    tm = w2n.word_to_num(' '.join(cmd_arr[3:]))
+            time.sleep(tm)
             robot.stop()
 
     elif cmd_arr[0] == 'turn':
