@@ -75,7 +75,7 @@ def exec_command(cmd, robot):
     elif cmd_arr[0] == 'stop':
         robot.stop()
 
-if __name__=='__main__':
+def get_robot(leftdir, rightdir, leftpwm, rightpwm):
     pi = pigpio.pi()
     pi.set_mode(LEFT_DIR, pigpio.OUTPUT)
     pi.set_mode(LEFT_PWM, pigpio.OUTPUT)
@@ -89,8 +89,9 @@ if __name__=='__main__':
     left_motor = Motor(LEFT_PWM, LEFT_DIR, pi)
     right_motor = Motor(RIGHT_PWM, RIGHT_DIR, pi)
     robot = Robot(left_motor, right_motor)
+    return robot
 
-    with open('cmdsequence.txt') as infile:
-        for line in infile:
-            exec_command(line, robot)
+    # with open('cmdsequence.txt') as infile:
+    #     for line in infile:
+    #         exec_command(line, robot)
 
