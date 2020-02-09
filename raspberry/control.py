@@ -53,41 +53,43 @@ class Robot:
         self.right.set_speed(0)
 
 def exec_command(cmd, robot):
-    cmd_arr = cmd.split()
-    if cmd_arr[0] == 'go':
-        if cmd_arr[1]=='forward' or cmd_arr=='forwards':
-            robot.forward(1)
-        else:
-            robot.reverse(1)
+    try:
+        cmd_arr = cmd.split()
+        if cmd_arr[0] == 'go':
+            if cmd_arr[1]=='forward' or cmd_arr=='forwards':
+                robot.forward(1)
+            else:
+                robot.reverse(1)
 
-        if len(cmd_arr) > 2:
-            tm = 0
-            try:
-                if 'second' in cmd_arr[-1]:
-                    tm  = w2n.word_to_num(" ".join(cmd_arr[2:-1]))
-                else:
+            if len(cmd_arr) > 2:
+                tm = 0
+                try:
                     tm = w2n.word_to_num(' '.join(cmd_arr[2:]))
-            except ValueError:
-                if 'second' in cmd_arr[-1]:
-                    tm  = w2n.word_to_num(" ".join(cmd_arr[3:-1]))
-                else:
-                    tm = w2n.word_to_num(' '.join(cmd_arr[3:]))
-            time.sleep(tm)
-            robot.stop()
+                except:
+                    try:
+                        tm = w2n.word_to_num(' '.join(cmd_arr[2:-1]))
+                    except:
+                        pass
+                finally:
+                    time.sleep(tm)
+                    robot.stop()
 
-    elif cmd_arr[0] == 'turn':
-        if cmd_arr[1] == 'left':
-            robot.turn_left(1)
-            time.sleep(lt_time)
+        elif cmd_arr[0] == 'turn':
+            if cmd_arr[1] == 'left':
+                robot.turn_left(1)
+                time.sleep(lt_time)
+                robot.stop()
+            else:
+                robot.turn_right(1)
+                time.sleep(rt_time)
+                robot.stop()
+        elif cmd_arr[0] == 'stop':
             robot.stop()
-        else:
-            robot.turn_right(1)
-            time.sleep(rt_time)
-            robot.stop()
-    elif cmd_arr[0] == 'stop':
+        elif cmd_arr[0]=='dance':
+            robot.turn_left(0.95)
+    except:
+        print("Invalid command")
         robot.stop()
-    elif cmd_arr[0]=='dance':
-        robot.turn_left(0.95)
 
 def get_robot(leftdir, rightdir, leftpwm, rightpwm):
     pi = pigpio.pi()
