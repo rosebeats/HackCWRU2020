@@ -87,6 +87,10 @@ def exec_command(cmd, robot):
             robot.stop()
         elif cmd_arr[0]=='dance':
             robot.turn_left(0.95)
+        elif cmd_arr[0]=='execute':
+            with open('cmdsequence.txt') as infile:
+                for line in infile:
+                    exec_command(line, robot)
     except:
         print("Invalid command")
         robot.stop()
@@ -107,7 +111,9 @@ def get_robot(leftdir, rightdir, leftpwm, rightpwm):
     robot = Robot(left_motor, right_motor)
     return robot
 
-    # with open('cmdsequence.txt') as infile:
-    #     for line in infile:
-    #         exec_command(line, robot)
+if __name__=='__main__':
+    robot = get_robot(LEFT_DIR, RIGHT_DIR, LEFT_PWM, RIGHT_PWM)
+    with open('cmdsequence.txt') as infile:
+        for line in infile:
+            exec_command(line, robot)
 

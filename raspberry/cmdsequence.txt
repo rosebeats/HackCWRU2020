@@ -1,4 +1,8 @@
 go forward 1
-turn left
 turn right
-go backward 2.2
+go forward 1
+turn right
+go forward 1
+turn right
+go forward 1
+turn right
