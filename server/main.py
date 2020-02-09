@@ -10,40 +10,35 @@ client = storage.Client()
 bucket_name = 'botcontroller-267620.appspot.com'
 bucket = client.bucket(bucket_name)
 
-#@app.route('/delete', methods=['DELETE'])
-#def delete():
-#    blob = bucket.blob
-#    commandUuid = ''
-#    try:
-#        commandUuid = UUID(request.form['uuid'], version=4)
-#    except:
-#        return 'invalid uuid!', 400
-#    commandUuid = str(commandUuid)
-
-@app.route('/')
-def test():
-    return '''<form method="post" action="/send">
-    UUID:<br>
-    <input type="text" name="uuid"><br>
-    text:<br>
-    <input type="text" name="text"><br>
-    <input type="submit" value="Submit">
-</form>'''
-
-@app.route('/send', methods=['POST'])
-def send():
-    commandUuid = ''
+@app.route('/commands/<commandUuid>', methods=['GET', 'POST', 'DELETE'])
+def commands(commandUuid):
     try:
-        commandUuid = UUID(request.form['uuid'], version=4)
+        commandUuid = UUID(commandUuid, version=4)
+        commandUuid = str(commandUuid)
     except:
         return 'invalid uuid!', 400
+
+    if request.method == 'POST':
+        return send(commandUuid)
+    blob = bucket.blob(commandUuid)
+    if not blob.exists():
+        return 'not found!', 404
+    if request.method == 'GET':
+        return blob.download_as_string();
+    else:
+        blob.delete()
+        return 'success'
+
+def send(commandUuid):
     try:
-        text = request.form['text']
+        text = request.data.decode('ascii')
+        if len(text) == 0:
+            return 'empty message!', 400
         if text.find('\n') != -1 or text.find('\r') != -1:
             return 'cannot have line breaks!', 400
     except:
         return 'invalid text!', 400
-    commandUuid = str(commandUuid)
+
     blob = bucket.blob(commandUuid)
     tmp_filename = os.path.join('/tmp', commandUuid)
     if blob.exists():
@@ -54,7 +49,12 @@ def send():
     with open(tmp_filename, 'r+') as f:
         lines = f.readlines()
         lines = lines[-10:]
-        lines.append(text + '\n')
+        num = 0
+        try:
+            num = int(lines[-1].split(',')[0])
+        except:
+            pass
+        lines.append(str(num + 1) + ',' + text + '\n')
         f.seek(0)
         f.truncate(0)
         f.writelines(lines)
