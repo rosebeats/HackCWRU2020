@@ -64,12 +64,12 @@ def exec_command(cmd, robot):
             if len(cmd_arr) > 2:
                 tm = 0
                 try:
-                    tm = w2n.word_to_num(' '.join(cmd_arr[2:]))
+                    tm = float(cmd_arr[2])
                 except:
                     try:
-                        tm = w2n.word_to_num(' '.join(cmd_arr[2:-1]))
+                        tm = w2n.word_to_num(' '.join(cmd_arr[2:]))
                     except:
-                        pass
+                        tm = w2n.word_to_num(' '.join(cmd_arr[2:-1]))
                 finally:
                     time.sleep(tm)
                     robot.stop()
